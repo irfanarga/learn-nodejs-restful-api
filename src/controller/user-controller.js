@@ -22,4 +22,16 @@ const login = async (req, res, next) => {
   }
 };
 
-export default { register, login };
+const get = async (req, res, next) => {
+  try {
+    const username = req.user.username;
+    const result = await userService.get(username);
+    res.status(200).json({
+      data: result, // result yang dipanggil di unit testing
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { register, login, get };
