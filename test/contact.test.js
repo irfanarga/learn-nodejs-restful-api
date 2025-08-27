@@ -90,3 +90,75 @@ describe("GET /api/contacts/:contactId", function () {
     expect(result.status).toBe(404);
   });
 });
+
+describe("PUT /api/contacts/:contactId", function () {
+  beforeEach(async () => {
+    await createTestUser();
+    await createTestContact();
+  });
+
+  afterEach(async () => {
+    await removeAllTestContact();
+    await removeTestUser();
+  });
+
+  it("should can update existing contact", async () => {
+    const testContact = await getTestContact();
+
+    const result = await supertest(web)
+      .put("/api/contacts/" + testContact.id)
+      .set("Authorization", "test")
+      .send({
+        first_name: "Irfan",
+        last_name: "Arga",
+        email: "irfan@mail.com",
+        phone: "08090000001",
+      });
+
+    logger.info(result.body);
+
+    expect(result.status).toBe(200);
+    expect(result.body.data.first_name).toBe("Irfan");
+    expect(result.body.data.last_name).toBe("Arga");
+    expect(result.body.data.email).toBe("irfan@mail.com");
+    expect(result.body.data.phone).toBe("08090000001");
+    expect(result.body.data.id).toBe(testContact.id);
+  });
+
+  it("should reject if request is invalid", async () => {
+    const testContact = await getTestContact();
+
+    const result = await supertest(web)
+      .put("/api/contacts/" + testContact.id)
+      .set("Authorization", "test")
+      .send({
+        first_name: "",
+        last_name: "",
+        email: "irfan",
+        phone: "",
+      });
+
+    logger.info(result.body);
+
+    expect(result.status).toBe(400);
+  });
+
+  it("should reject if contact id not found", async () => {
+    const testContact = await getTestContact();
+
+    const result = await supertest(web)
+      .put("/api/contacts/" + testContact.id + 1)
+      .set("Authorization", "test")
+      .send({
+        first_name: "Irfan",
+        last_name: "Arga",
+        email: "irfan@mail.com",
+        phone: "08090000001",
+      });
+
+    logger.info(result.body);
+
+    expect(result.status).toBe(404);
+    expect(result.body.errors).toBeDefined();
+  });
+});
