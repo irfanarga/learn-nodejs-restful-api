@@ -4,7 +4,7 @@ import {
   getContactValidation,
   searchContactValidation,
   updateContactValidation,
-} from "../validation/contact-validation";
+} from "../validation/contact-validation.js";
 import { prismaClient } from "../application/database.js";
 import { ResponseError } from "../error/response-error.js";
 
