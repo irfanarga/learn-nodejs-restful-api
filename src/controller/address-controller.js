@@ -62,4 +62,17 @@ const remove = async (req, res, next) => {
   }
 };
 
-export default { create, get, update, remove };
+const list = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const contactId = req.params.contactId;
+    const result = await addressService.list(user, contactId);
+    res.status(200).json({
+      data: result, // result yang dipanggil di unit testing
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { create, get, update, remove, list };
