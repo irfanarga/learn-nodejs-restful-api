@@ -30,4 +30,21 @@ const get = async (req, res, next) => {
   }
 };
 
-export default { create, get };
+const update = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const contactId = req.params.contactId;
+    const request = req.body;
+    const addressId = req.params.addressId;
+    request.id = addressId;
+
+    const result = await addressService.update(user, contactId, request);
+    res.status(200).json({
+      data: result, // result yang dipanggil di unit testing
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { create, get, update };
